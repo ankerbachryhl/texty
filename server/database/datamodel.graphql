@@ -1,0 +1,14 @@
+type Message {
+  id: ID! @unique
+  content: String!
+  createdAt: DateTime!
+  sendBy: User
+}
+
+type User {
+  id: ID! @unique
+  name: String!
+  email: String! @unique
+  password: String!
+  messages: [Message!]!
+}
