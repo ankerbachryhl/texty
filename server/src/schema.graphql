@@ -1,11 +1,13 @@
-# import Message, MessageSubscriptionPayload from "./generated/prisma.graphql"
+# import Message, MessageSubscriptionPayload, Chat from "./generated/prisma.graphql"
 
 type Query {
-  getChat(skip: Int, first: Int): [Message!]!
+  messages(skip: Int, first: Int): [Message!]!
+  chats: [Chat!]!
 }
 
 type Mutation {
-  createMessage(content: String!): Message!
+  createChat(name: String!): Chat!
+  createMessage(content: String!, chatId: String!): Message!
   signup(email: String!, password: String!, name: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
 }

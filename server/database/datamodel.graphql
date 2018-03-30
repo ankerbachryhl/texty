@@ -3,6 +3,7 @@ type Message {
   content: String!
   createdAt: DateTime!
   sendBy: User
+  chat: Chat!
 }
 
 type User {
@@ -10,5 +11,11 @@ type User {
   name: String!
   email: String! @unique
   password: String!
+  messages: [Message!]!
+}
+
+type Chat {
+  id: ID! @unique
+  name: String!
   messages: [Message!]!
 }

@@ -2,14 +2,25 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { APP_SECRET, getUserId } = require('../utils');
 
+function createChat(parent, args, context, info) {
+  const { name } = args;
+  return context.db.mutation.createChat({
+    data: { content }}, info)
+}
+
 function createMessage(parent, args, context, info) {
-  const { content } = args;
+  const { content, chatId } = args;
   const userId = getUserId(context);
   return context.db.mutation.createMessage({
-    data: { content, sendBy: { connect: { id: userId }} }}, info);
+    data: { content, sendBy: { connect: { id: userId }}, chat: { connect: { id: chatId }} }}, info);
 }
 
 async function signup(parent, args, context, info) {
+  const alreadyUser= await context.db.query.user({ where: { email: args.email }});
+  if(alreadyUser) {
+    throw new Error(`A user with the email: ${args.email} already exist`)
+  }
+
   const password = await bcrypt.hash(args.password, 10);
   const user = await context.db.mutation.createUser({
     data: { ...args, password }
