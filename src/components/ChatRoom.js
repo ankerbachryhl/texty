@@ -1,64 +1,42 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import Message from './Message'
 import MessageInput from './MessageInput'
 
 import { AUTH_TOKEN } from '../constants'
 
+const MESSAGES_QUERY = gql`
+  query getChatMessages($chatId: String!) {
+    chatMessages(chatId: $chatId) {
+      content
+      createdAt
+      id
+      sendBy {
+        name
+      }
+    }
+  }
+`
+
+const MESSAGES_SUBSCRIPTION = gql`
+  subscription {
+    newMessage {
+      node {
+        content
+        createdAt
+        id
+        sendBy {
+          name
+        }
+      }
+    }
+  }
+`
 
 class ChatRoom extends Component {
 
-  componentDidMount() {
-    this.subscribeToNewMessages()
-  }
-
-
-  subscribeToNewMessages = () => {
-    this.props.chatQuery.subscribeToMore({
-      document: gql`
-        subscription {
-          newMessage {
-            node {
-              content
-              createdAt
-              id
-              sendBy {
-                name
-              }
-            }
-          }
-        }
-      `,
-      updateQuery: (previous, { subscriptionData }) => {
-        const newMessage = subscriptionData.data.newMessage.node
-        const newArray = [...previous.getChat, newMessage]
-
-        const result = {
-          ...previous,
-          getChat: newArray,
-        }
-        return result
-      },
-    })
-  }
-
-  renderMessages() {
-    if (this.props.chatQuery && this.props.chatQuery.loading) {
-      return <div>Loading</div>
-    }
-
-    if (this.props.chatQuery && this.props.chatQuery.error) {
-      console.log(this.props.chatQuery.error)
-      return <div>Error</div>
-    }
-
-    const chatMessages = this.props.chatQuery.getChat
-    console.log(chatMessages)
-
-    return chatMessages.map(message =>
-      <Message key={message.id} message={message} />)
-  }
+  state = { chatId: this.props.location.state.chatId }
 
   render() {
     const authToken = localStorage.getItem(AUTH_TOKEN)
@@ -67,8 +45,37 @@ class ChatRoom extends Component {
       <div>
         {authToken ? (
           <div>
-            {this.renderMessages()}
-            <MessageInput />
+            <Query
+              query={MESSAGES_QUERY}
+              variables={{ chatId: this.state.chatId }}
+            >
+              {({ loading, error, subscribeToMore, ...result }) => {
+                if (loading) return `Loading messages - *wheel spinning*`;
+                if (error) return "Error :/ Error :/ Error :/"
+
+                return (
+                  <ChatRoomWithData
+                    {...result}
+                    subscribeToNewMessages={() => (
+                      subscribeToMore({
+                        document: MESSAGES_SUBSCRIPTION,
+                        updateQuery: (prev, { subscriptionData }) => {
+                          if (!subscriptionData.data) return prev;
+                          const newMessage = subscriptionData.data.newMessage.node;
+                          const newDataArray = [...prev.chatMessages, newMessage];
+                          return ({
+                            ...prev,
+                            chatMessages: newDataArray,
+                          })
+                        }
+                      })
+                    )}
+                  />
+                )
+              }}
+
+            </Query>
+            <MessageInput chatId={this.state.chatId} />
           </div>
         ) : (
           <div>
@@ -80,19 +87,18 @@ class ChatRoom extends Component {
   }
 }
 
-//GraphQL data query
+class ChatRoomWithData extends Component {
 
-export const CHAT_QUERY = gql`
-  query ChatQuery {
-    getChat {
-      content
-      createdAt
-      id
-      sendBy {
-        name
-      }
-    }
+  componentDidMount() {
+    this.props.subscribeToNewMessages()
   }
-`
 
-export default graphql(CHAT_QUERY, { name: 'chatQuery' }) (ChatRoom)
+  render() {
+    return (
+      this.props.data.chatMessages.map(message =>
+        <Message key={message.id} message={message} />)
+    )
+  }
+}
+
+export default ChatRoom

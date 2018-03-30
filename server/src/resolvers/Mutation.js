@@ -5,7 +5,7 @@ const { APP_SECRET, getUserId } = require('../utils');
 function createChat(parent, args, context, info) {
   const { name } = args;
   return context.db.mutation.createChat({
-    data: { content }}, info)
+    data: { name }}, info)
 }
 
 function createMessage(parent, args, context, info) {
@@ -54,6 +54,7 @@ async function login(parent, args, context, info) {
 }
 
 module.exports = {
+  createChat,
   createMessage,
   signup,
   login,

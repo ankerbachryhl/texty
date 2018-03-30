@@ -1,8 +1,8 @@
 # import Message, MessageSubscriptionPayload, Chat from "./generated/prisma.graphql"
 
 type Query {
-  messages(skip: Int, first: Int): [Message!]!
   chats: [Chat!]!
+  chatMessages(chatId: String!): [Message!]!
 }
 
 type Mutation {

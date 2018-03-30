@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
-import { graphql, compose } from 'react-apollo'
+import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import { AUTH_TOKEN } from '../constants'
+
+const SIGNUP_MUTATION = gql`
+  mutation SignupMutation($email: String!, $password: String!, $name: String!) {
+    signup(email: $email, password: $password, name: $name) {
+      token
+    }
+  }
+`
+const LOGIN_MUTATION = gql`
+  mutation LoginMutation($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+    }
+  }
+`
 
 class Login extends Component {
   state = {
@@ -10,34 +25,6 @@ class Login extends Component {
     email: '',
     password: '',
     name: '',
-  }
-
-  submit = async () => {
-    const { name, email, password } = this.state
-
-    if (this.state.login) {
-      const result = await this.props.loginMutation({
-        variables: {
-          email,
-          password,
-        },
-      })
-
-      const { token } = result.data.login
-      this.saveUserToken(token)
-    } else {
-      const result = await this.props.signupMutation({
-        variables: {
-          name,
-          email,
-          password,
-        },
-      })
-
-      const { token } = result.data.signup
-      this.saveUserToken(token)
-    }
-    this.props.history.push(`/chat`)
   }
 
   saveUserToken = token => {
@@ -73,11 +60,44 @@ class Login extends Component {
           />
         </div>
 
-        <div>
-          <button onClick={() => this.submit()}>
-            {this.state.login ? "Log in" : "Create account"}
-          </button>
-        </div>
+        <Mutation mutation={LOGIN_MUTATION} onCompleted={( data ) => {
+          this.saveUserToken(data.login.token)
+          this.props.history.push(`/chat`)
+        }}>
+          {(login, { data, error }) => {
+            let errorMessage = ''
+            if(error) {
+              errorMessage = error.message.replace('GraphQL error:', '')
+            }
+
+            return (
+              <Mutation mutation={SIGNUP_MUTATION} onCompleted={( data ) => {
+                this.saveUserToken(data.signup.token)
+                this.props.history.push(`/chat`)
+              }}>
+                {(signup, { data, error }) => {
+                  const { name, email, password } = this.state
+                  if(error) {
+                    errorMessage = error.message.replace('GraphQL error:', '')
+                  }
+
+                  return (
+                    <LoginButton
+                      text={this.state.login ? "Log in" : "Create account"}
+                      error={errorMessage}
+                      login={this.state.login ? true : false}
+                      mutationFunction={this.state.login ? login : signup}
+                      name={name}
+                      email={email}
+                      password={password}
+                    />
+                  )
+                }}
+              </Mutation>
+            )}
+          }
+        </Mutation>
+
         <div onClick={() => this.setState({ login: !this.state.login })}>
           { this.state.login ? "Need to create an account?" : "Already have an account?"}
         </div>
@@ -86,22 +106,31 @@ class Login extends Component {
   }
 }
 
-const SIGNUP_MUTATION = gql`
-  mutation SignupMutation($email: String!, $password: String!, $name: String!) {
-    signup(email: $email, password: $password, name: $name) {
-      token
-    }
+class LoginButton extends Component {
+  render() {
+    const { name, email, password, mutationFunction, login, error, text } = this.props
+    return (
+      <div>
+        <p>{this.props.error}</p>
+        <button onClick={() => {
+            if (login) {
+              mutationFunction({ variables: {
+                email,
+                password,
+              }})
+            } else {
+              mutationFunction({ variables: {
+                name,
+                email,
+                password,
+              }})
+            }
+          }}>
+          {text}
+        </button>
+      </div>
+    )
   }
-`
-const LOGIN_MUTATION = gql`
-  mutation LoginMutation($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      token
-    }
-  }
-`
+}
 
-export default compose(
-  graphql(SIGNUP_MUTATION, { name: 'signupMutation' }),
-  graphql(LOGIN_MUTATION, { name: 'loginMutation'}),
-) (Login)
+export default Login
