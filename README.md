@@ -1,7 +1,6 @@
-## texty
-a GraphQL chat app built with react, apollo, grapql and prisma
+## texty - [chatting recreated](http://texty-app.herokuapp.com/)
 
-[try it!](http://texty-app.herokuapp.com/)
+a GraphQL chat app built with react, apollo, grapql and prisma
 
 ## features include
 - Login & Signup
