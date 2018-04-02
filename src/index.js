@@ -18,6 +18,8 @@ import { AUTH_TOKEN } from './constants';
 
 //QUERY AND MUTATIONS LINK MIDDLEWARE
 
+const usersOnline = []
+
 const httpLink = new HttpLink({ uri: 'https://texty-server.herokuapp.com/' })
 
 const middlewareAuthLink = new ApolloLink((operation, forward) => {

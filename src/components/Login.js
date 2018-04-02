@@ -55,14 +55,14 @@ class Login extends Component {
           <input
             value={this.state.password}
             onChange={e => this.setState({ password: e.target.value })}
-            type="text"
+            type="password"
             placeholder={this.state.login ? "Enter your password" : "Make a password" }
           />
         </div>
 
         <Mutation mutation={LOGIN_MUTATION} onCompleted={( data ) => {
           this.saveUserToken(data.login.token)
-          this.props.history.push(`/chat`)
+          this.props.history.push(`/`)
         }}>
           {(login, { data, error }) => {
             let errorMessage = ''
@@ -71,10 +71,13 @@ class Login extends Component {
             }
 
             return (
-              <Mutation mutation={SIGNUP_MUTATION} onCompleted={( data ) => {
-                this.saveUserToken(data.signup.token)
-                this.props.history.push(`/chat`)
-              }}>
+              <Mutation
+                mutation={SIGNUP_MUTATION}
+                onCompleted={( data ) => {
+                  this.saveUserToken(data.signup.token)
+                  this.props.history.push(`/`)
+                }}
+              >
                 {(signup, { data, error }) => {
                   const { name, email, password } = this.state
                   if(error) {

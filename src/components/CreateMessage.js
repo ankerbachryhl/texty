@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import { CHAT_QUERY } from './ChatRoom';
+import { MESSAGES_QUERY } from './ChatRoom';
 
 const CREATE_MESSAGE_MUTATION = gql`
   mutation createMessage($content: String!, $chatId: String!) {
@@ -17,13 +17,15 @@ const CREATE_MESSAGE_MUTATION = gql`
   }
 `
 
-class MessageInput extends Component {
+class CreateMessage extends Component {
   state = { messageContent: '' };
 
   render() {
     return (
       <div>
-        <Mutation mutation={CREATE_MESSAGE_MUTATION}>
+        <Mutation
+          mutation={CREATE_MESSAGE_MUTATION}
+        >
           {(createMessage, { loading, error }) => {
             if (loading) return <p>Sending message!</p>
             if (error) return <p>Error</p>
@@ -36,6 +38,7 @@ class MessageInput extends Component {
                 />
                 <button onClick={() => {
                     createMessage({ variables: { content: this.state.messageContent, chatId: this.props.chatId }})
+                    this.setState({ messageContent: '' })
                   }}
                 >
                   Send message
@@ -52,4 +55,4 @@ class MessageInput extends Component {
 
 
 
-export default MessageInput
+export default CreateMessage

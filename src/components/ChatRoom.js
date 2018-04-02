@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import Message from './Message'
-import MessageInput from './MessageInput'
+import CreateMessage from './CreateMessage'
 
 import { AUTH_TOKEN } from '../constants'
 
-const MESSAGES_QUERY = gql`
+export const MESSAGES_QUERY = gql`
   query getChatMessages($chatId: String!) {
     chatMessages(chatId: $chatId) {
       content
@@ -75,7 +75,7 @@ class ChatRoom extends Component {
               }}
 
             </Query>
-            <MessageInput chatId={this.state.chatId} />
+            <CreateMessage chatId={this.state.chatId} />
           </div>
         ) : (
           <div>

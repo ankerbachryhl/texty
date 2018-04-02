@@ -5,8 +5,9 @@ import { Link } from 'react-router-dom'
 
 
 import ChatRoom from './ChatRoom'
+import CreateChat from './CreateChat'
 
-const CHATS_QUERY = gql`
+export const CHATS_QUERY = gql`
   query getChats {
     chats {
       id
@@ -23,11 +24,14 @@ class Chats extends Component {
           {({ loading, error, data }) => {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error..</p>;
+
+            console.log("optimisticResponse:", data)
             return (
-              data.chats.map(chat => <ChatSneakPeak chat={chat} />)
+              data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} />)
             )
           }}
         </Query>
+        <CreateChat />
       </div>
     )
   }

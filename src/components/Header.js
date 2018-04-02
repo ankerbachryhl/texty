@@ -10,25 +10,20 @@ const Header = (props) => {
   return (
     <div>
       {authToken && (
-        <Link to="/chat">
-            Chat
-        </Link>
-      )}
-      {authToken ? (
-          <div
+        <div>
+          <Link to="/">
+              All chats
+          </Link>
+          <a
             onClick={() => {
               localStorage.removeItem(AUTH_TOKEN);
               props.history.push(`/`);
             }}
           >
             Logout
-          </div>
-        ) : (
-          <Link to="/">
-            Login
-          </Link>
-        )
-      }
+          </a>
+        </div>
+      )}
     </div>
   )
 }
