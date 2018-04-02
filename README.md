@@ -1,12 +1,12 @@
 ## texty - [chatting recreated](http://texty-app.herokuapp.com/)
 
-a GraphQL chat app built with react, apollo, grapqhl and prisma
+a GraphQL chat app built with react, apollo, graphql and prisma
 
 ## features include
-- Login & Signup
+- Login & signup
 - Creation of chat rooms
-- Sending chats in diffrent chat rooms
-- 100% realtime
+- Sending chats in different chat rooms
+- realtime updating with subscriptions
 
 ## todo
 - Styling
