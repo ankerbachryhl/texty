@@ -25,7 +25,6 @@ class Chats extends Component {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error..</p>;
 
-            console.log("optimisticResponse:", data)
             return (
               data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} />)
             )

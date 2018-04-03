@@ -65,7 +65,7 @@ var RepeatWhenSubscriber = /*@__PURE__*/ (/*@__PURE__*/ function (_super) {
             if (!this.retries) {
                 this.subscribeToRetries();
             }
-            else if (this.retriesSubscription.closed) {
+            if (!this.retriesSubscription || this.retriesSubscription.closed) {
                 return _super.prototype.complete.call(this);
             }
             this._unsubscribeAndRecycle();
@@ -106,4 +106,4 @@ var RepeatWhenSubscriber = /*@__PURE__*/ (/*@__PURE__*/ function (_super) {
     };
     return RepeatWhenSubscriber;
 }(OuterSubscriber));
-//# sourceMappingURL=repeatWhen.js.map 
+//# sourceMappingURL=repeatWhen.js.map

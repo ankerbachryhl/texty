@@ -1,3 +1,5 @@
+'use strict';
+
 function getRequestOptions(endpoint, fixture, baseUrl) {
   fixture.url = fixture.url || fixture.path;
   fixture.request = fixture.request || fixture.args;
@@ -7,19 +9,19 @@ function getRequestOptions(endpoint, fixture, baseUrl) {
   };
   var contentType = endpoint.consumes ? endpoint.consumes[0] : 'application/json';
   reqOpts.method = fixture.method;
-  reqOpts.url = `${baseUrl}${fixture.url}`;
+  reqOpts.url = '' + baseUrl + fixture.url;
   reqOpts.headers['Content-type'] = contentType;
 
-  (endpoint.parameters || []).forEach((param) => {
+  (endpoint.parameters || []).forEach(function (param) {
     var value = fixture.request[param.name];
 
-    if (param.required && !value) throw new Error(`No required request field ${param.name} for ${fixture.method.toUpperCase()} ${fixture.url}`);
+    if (param.required && !value) throw new Error('No required request field ' + param.name + ' for ' + fixture.method.toUpperCase() + ' ' + fixture.url);
     if (!value) return;
 
     switch (param.in) {
       case 'body':
         if (contentType === 'application/x-www-form-urlencoded') {
-          reqOpts.body = reqOpts.body ? `${reqOpts.body}&${param.name}=${value}` : `${param.name}=${value}`;
+          reqOpts.body = reqOpts.body ? reqOpts.body + '&' + param.name + '=' + value : param.name + '=' + value;
           reqOpts.json = false;
         } else {
           reqOpts.body = value;
@@ -33,7 +35,7 @@ function getRequestOptions(endpoint, fixture, baseUrl) {
         reqOpts.json = false;
         break;
       case 'path':
-        reqOpts.url = reqOpts.url.replace(`{${param.name}}`, value);
+        reqOpts.url = reqOpts.url.replace('{' + param.name + '}', value);
         break;
       case 'query':
         if (!reqOpts.qs) reqOpts.qs = {};
@@ -59,3 +61,4 @@ function getRequestOptions(endpoint, fixture, baseUrl) {
 }
 
 module.exports = getRequestOptions;
+

@@ -24,7 +24,6 @@ class App extends Component {
           {!authToken && (
             <Switch>
               <Route path="/" component={Login} />
-              <Route exact path="/chats" component={Chats} />
             </Switch>
           )}
       </div>

@@ -16,13 +16,12 @@ function createMessage(parent, args, context, info) {
 }
 
 async function signup(parent, args, context, info) {
-  const emailExist = await context.db.query.user({ where: { email: args.email }});
-  const usernameExist = await context.db.query.user({ where: { username: args.username }});
 
-  if(emailExist) {
-    throw new Error(`A user with the email: ${args.email} already exist`)
-  } else if (usernameExist) {
-    throw new Error(`Sorry but you need to be a bit more original. A user with the username: ${args.username} already exist`)
+  const emailExist = await context.db.query.user({
+    where: { email: args.email }});
+
+  if (emailExist) {
+    throw new Error(`Sorry but you need to be a bit more original. A user with the email: ${args.email} already exist`)
   }
 
   const password = await bcrypt.hash(args.password, 10);

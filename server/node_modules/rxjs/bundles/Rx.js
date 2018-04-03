@@ -790,10 +790,13 @@ var Subscriber = (function (_super) {
                     break;
                 }
                 if (typeof destinationOrNext === 'object') {
-                    if (destinationOrNext instanceof Subscriber) {
-                        this.syncErrorThrowable = destinationOrNext.syncErrorThrowable;
-                        this.destination = destinationOrNext;
-                        this.destination.add(this);
+                    // HACK(benlesh): To resolve an issue where Node users may have multiple
+                    // copies of rxjs in their node_modules directory.
+                    if (isTrustedSubscriber(destinationOrNext)) {
+                        var trustedSubscriber = destinationOrNext[rxSubscriber]();
+                        this.syncErrorThrowable = trustedSubscriber.syncErrorThrowable;
+                        this.destination = trustedSubscriber;
+                        trustedSubscriber.add(this);
                     }
                     else {
                         this.syncErrorThrowable = true;
@@ -1007,6 +1010,9 @@ var SafeSubscriber = (function (_super) {
     };
     return SafeSubscriber;
 }(Subscriber));
+function isTrustedSubscriber(obj) {
+    return obj instanceof Subscriber || ('syncErrorThrowable' in obj && obj[rxSubscriber]);
+}
 
 function toSubscriber(nextOrObserver, error, complete) {
     if (nextOrObserver) {
@@ -4288,7 +4294,7 @@ var FromEventObservable = (function (_super) {
         else if (isEventTarget(sourceObj)) {
             var source_1 = sourceObj;
             sourceObj.addEventListener(eventName, handler, options);
-            unsubscribe = function () { return source_1.removeEventListener(eventName, handler); };
+            unsubscribe = function () { return source_1.removeEventListener(eventName, handler, options); };
         }
         else if (isJQueryStyleEventEmitter(sourceObj)) {
             var source_2 = sourceObj;
@@ -6506,12 +6512,16 @@ function parseXhrResponse(responseType, xhr) {
                 return xhr.responseType ? xhr.response : JSON.parse(xhr.response || xhr.responseText || 'null');
             }
             else {
+                // HACK(benlesh): TypeScript shennanigans
+                // tslint:disable-next-line:no-any latest TS seems to think xhr is "never" here.
                 return JSON.parse(xhr.responseText || 'null');
             }
         case 'xml':
             return xhr.responseXML;
         case 'text':
         default:
+            // HACK(benlesh): TypeScript shennanigans
+            // tslint:disable-next-line:no-any latest TS seems to think xhr is "never" here.
             return ('response' in xhr) ? xhr.response : xhr.responseText;
     }
 }
@@ -15017,7 +15027,7 @@ var RepeatWhenSubscriber = (function (_super) {
             if (!this.retries) {
                 this.subscribeToRetries();
             }
-            else if (this.retriesSubscription.closed) {
+            if (!this.retriesSubscription || this.retriesSubscription.closed) {
                 return _super.prototype.complete.call(this);
             }
             this._unsubscribeAndRecycle();
@@ -18387,6 +18397,9 @@ function timestamp$$1(scheduler) {
 Observable.prototype.timestamp = timestamp$$1;
 
 function toArrayReducer(arr, item, index) {
+    if (index === 0) {
+        return [item];
+    }
     arr.push(item);
     return arr;
 }
