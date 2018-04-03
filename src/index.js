@@ -20,7 +20,7 @@ import { AUTH_TOKEN } from './constants';
 
 const usersOnline = []
 
-const httpLink = new HttpLink({ uri: 'https://eu1.prisma.sh/anker-bach-ryhl/test/' })
+const httpLink = new HttpLink({ uri: 'https://texty-server.herokuapp.com/' })
 
 const middlewareAuthLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem(AUTH_TOKEN);
@@ -38,7 +38,7 @@ const httpLinkWithAuthToken = middlewareAuthLink.concat(httpLink)
 //SUBSCRIPTION LINK MIDDLEWARE
 
 const wsLink = new WebSocketLink({
-  uri: `ws://eu1.prisma.sh/anker-bach-ryhl/test/`,
+  uri: `ws://texty-server.herokuapp.com/`,
   options: {
     reconnect: true,
     connectionParams: {
