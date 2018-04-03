@@ -1,0 +1,1 @@
+When adding @unique identifier to a type and running command prisma deploy I expect prisma to update my schema. But when I check my generated schema it hasn't updated. One thing to note though is that when adding @unique identifier to a new type and running prisma deploy again the generated schema updates the type that I previously added @unique identifier to.

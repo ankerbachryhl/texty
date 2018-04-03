@@ -2,7 +2,7 @@
 service: texty
 
 # the cluster and stage the service is deployed to
-stage: dev
+stage: prod
 
 # to disable authentication:
 # disableAuth: true
@@ -11,8 +11,5 @@ secret: mysecret123
 # the file path pointing to your data model
 datamodel: datamodel.graphql
 
-# seed your service with initial data based on seed.graphql
-seed:
-  import: seed.graphql
 
 cluster: public-cookietongue-807/prisma-eu1

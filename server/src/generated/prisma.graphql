@@ -8,6 +8,7 @@
 type Chat implements Node {
   id: ID!
   name: String!
+  createdAt: DateTime!
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
 }
 
@@ -99,15 +100,16 @@ enum ChatOrderByInput {
   id_DESC
   name_ASC
   name_DESC
-  updatedAt_ASC
-  updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
 }
 
 type ChatPreviousValues {
   id: ID!
   name: String!
+  createdAt: DateTime!
 }
 
 type ChatSubscriptionPayload {
@@ -282,6 +284,35 @@ input ChatWhereInput {
   All values not ending with the given string.
   """
   name_not_ends_with: String
+  createdAt: DateTime
+  """
+  All values that are not equal to given value.
+  """
+  createdAt_not: DateTime
+  """
+  All values that are contained in given list.
+  """
+  createdAt_in: [DateTime!]
+  """
+  All values that are not contained in given list.
+  """
+  createdAt_not_in: [DateTime!]
+  """
+  All values less than the given value.
+  """
+  createdAt_lt: DateTime
+  """
+  All values less than or equal the given value.
+  """
+  createdAt_lte: DateTime
+  """
+  All values greater than the given value.
+  """
+  createdAt_gt: DateTime
+  """
+  All values greater than or equal the given value.
+  """
+  createdAt_gte: DateTime
   messages_every: MessageWhereInput
   messages_some: MessageWhereInput
   messages_none: MessageWhereInput
@@ -289,6 +320,7 @@ input ChatWhereInput {
 
 input ChatWhereUniqueInput {
   id: ID
+  name: String
 }
 
 scalar DateTime
@@ -1057,5 +1089,6 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  name: String
   email: String
 }

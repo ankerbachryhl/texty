@@ -16,6 +16,7 @@ type User {
 
 type Chat {
   id: ID! @unique
-  name: String!
+  name: String! @unique
+  createdAt: DateTime!
   messages: [Message!]!
 }

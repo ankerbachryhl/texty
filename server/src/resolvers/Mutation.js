@@ -20,8 +20,13 @@ async function signup(parent, args, context, info) {
   const emailExist = await context.db.query.user({
     where: { email: args.email }});
 
+  const nameExist = await context.db.query.user({
+    where: { name: args.name }});
+
   if (emailExist) {
     throw new Error(`Sorry but you need to be a bit more original. A user with the email: ${args.email} already exist`)
+  } else if (nameExist) {
+    throw new Error(`Sorry but you need to be a bit more original. A user with the name: ${args.name} already exist`)
   }
 
   const password = await bcrypt.hash(args.password, 10);
