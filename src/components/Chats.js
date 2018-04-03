@@ -40,7 +40,6 @@ const ChatSneakPeak = ({chat}) => (
   <div>
     <Link to={{ pathname: '/chat/' + chat.name, state: { chatId: chat.id }}}>
       <h1>{chat.name}</h1>
-      <h5>chat.createdAt</h5>
     </Link>
   </div>
 )
