@@ -8,6 +8,8 @@ import Chats from './Chats';
 
 import { AUTH_TOKEN } from '../constants'
 
+
+
 class App extends Component {
   render() {
     const authToken = localStorage.getItem(AUTH_TOKEN)

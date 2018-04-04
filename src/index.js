@@ -20,7 +20,7 @@ import { AUTH_TOKEN } from './constants';
 
 const usersOnline = []
 
-const httpLink = new HttpLink({ uri: 'https://texty-prod-server.herokuapp.com/' })
+const httpLink = new HttpLink({ uri: 'http://localhost:4000' })
 
 const middlewareAuthLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem(AUTH_TOKEN);
@@ -38,7 +38,7 @@ const httpLinkWithAuthToken = middlewareAuthLink.concat(httpLink)
 //SUBSCRIPTION LINK MIDDLEWARE
 
 const wsLink = new WebSocketLink({
-  uri: `ws://texty-prod-server.herokuapp.com/`,
+  uri: `ws://localhost:4000`,
   options: {
     reconnect: true,
     connectionParams: {

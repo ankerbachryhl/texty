@@ -1,8 +1,10 @@
-import React, { Component } from 'react'
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
-import Message from './Message'
-import CreateMessage from './CreateMessage'
+import React, { Component } from 'react';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
+
+import Message from './Message';
+import CreateMessage from './CreateMessage';
+import MediaUploader from './MediaUploader';
 
 import { AUTH_TOKEN } from '../constants'
 
@@ -10,6 +12,7 @@ export const MESSAGES_QUERY = gql`
   query getChatMessages($chatId: String!) {
     chatMessages(chatId: $chatId) {
       content
+      media
       createdAt
       id
       sendBy {
@@ -24,6 +27,7 @@ const MESSAGES_SUBSCRIPTION = gql`
     newMessage {
       node {
         content
+        media
         createdAt
         id
         sendBy {
@@ -76,6 +80,7 @@ class ChatRoom extends Component {
 
             </Query>
             <CreateMessage chatId={this.state.chatId} />
+            <MediaUploader chatId={this.state.chatId} />
           </div>
         ) : (
           <div>
