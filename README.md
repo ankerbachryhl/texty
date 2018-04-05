@@ -7,7 +7,8 @@ a GraphQL chat app built with react, apollo, graphql and prisma
 - Creation of chat rooms
 - Sending chats in different chat rooms
 - realtime updating with subscriptions
-- doesn't share or sell your data
+- sending gifs and images
+- no sharing or selling of data
 
 ## todo
 - Styling
