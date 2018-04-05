@@ -1,4 +1,4 @@
-## texty - [chatting recreated](http://texty-app.herokuapp.com/)
+## texty - [chatting recreated](https://texty-frontend-ertltxkchd.now.sh)
 
 a GraphQL chat app built with react, apollo, graphql and prisma
 
