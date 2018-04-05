@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
+import onError from '../utils';
 
 import { AUTH_TOKEN } from '../constants'
 
@@ -67,7 +68,7 @@ class Login extends Component {
           {(login, { data, error }) => {
             let errorMessage = ''
             if(error) {
-              errorMessage = error.message.replace('GraphQL error:', '')
+              errorMessage = errorMessage(error)
             }
 
             return (
@@ -81,7 +82,7 @@ class Login extends Component {
                 {(signup, { data, error }) => {
                   const { name, email, password } = this.state
                   if(error) {
-                    errorMessage = error.message.replace('GraphQL error:', '')
+                    errorMessage = errorMessage(error)
                   }
 
                   return (

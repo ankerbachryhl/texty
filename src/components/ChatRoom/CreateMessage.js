@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import onError from '../../utils';
 
 const CREATE_MESSAGE_MUTATION = gql`
-  mutation createMessage($content: String!, $media: String!, $chatId: String!) {
-    createMessage(content: $content, media: $media, chatId: $chatId) {
+  mutation createMessage($content: String!, $chatId: String!) {
+    createMessage(content: $content, chatId: $chatId) {
       content
       createdAt
       id
@@ -16,15 +17,7 @@ const CREATE_MESSAGE_MUTATION = gql`
 `
 
 class CreateMessage extends Component {
-  state = { messageContent: '', error: '' };
-
-  onError(error) {
-    const errorMessage = error.message.replace('GraphQL error:', '')
-
-    return (
-      <p>{errorMessage}</p>
-    )
-  }
+  state = { messageContent: '' };
 
   render() {
     return (
@@ -34,7 +27,7 @@ class CreateMessage extends Component {
         >
           {(createMessage, { loading, error }) => {
             if (loading) return <p>Sending message!</p>
-
+            if (error) return <p>{onError(error)}</p>
 
             return (
               <div>
@@ -44,20 +37,17 @@ class CreateMessage extends Component {
                   placeholder="Write message here"
                 />
                 <button onClick={() => {
-                    createMessage({ variables: { content: this.state.messageContent, media: '', chatId: this.props.chatId }})
+                    createMessage({ variables: { content: this.state.messageContent, chatId: this.props.chatId }})
                     this.setState({ messageContent: '' })
                   }}
                 >
                   Send message
                 </button>
-
-
               </div>
               )
             }
           }
         </Mutation>
-
       </div>
     )
   }

@@ -5,8 +5,7 @@ import { withRouter } from 'react-router'
 import { AUTH_TOKEN } from '../constants'
 
 const Header = (props) => {
-  const authToken = localStorage.getItem(AUTH_TOKEN)
-
+  const authToken = localStorage.getItem(AUTH_TOKEN);
   return (
     <div>
       {authToken && (

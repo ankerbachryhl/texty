@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import '../App.css';
-import ChatRoom from './ChatRoom';
+
+import ChatRoom from './ChatRoom/ChatRoom';
 import Login from './Login';
 import Header from './Header';
 import Chats from './Chats';
 
 import { AUTH_TOKEN } from '../constants'
-
-
 
 class App extends Component {
   render() {

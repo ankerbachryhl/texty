@@ -3,6 +3,7 @@ import axios from 'axios';
 import Dropzone from 'react-dropzone';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import onError from '../../utils';
 
 const CREATE_MESSAGE_WITH_MEDIA_MUTATION = gql`
   mutation createMessage($content: String!, $media: String!, $chatId: String!) {
@@ -23,23 +24,25 @@ class MediaUploader extends Component {
 
   onDropAccepted = async (acceptedFiles, createMessage) => {
 
+    //Setting loading message
     this.setState({ error: "", success: "Your file is being uploaded"})
 
+    //Making file FormData object to pass to cloudinary
     const file = new FormData();
     file.append('file', acceptedFiles[0])
     file.append("upload_preset", "u8tdluvv")
     file.append("api_key", "666797764456412")
 
-    const response = await axios.post("https://api.cloudinary.com/v1_1/texty/image/upload/", file, {
+    //Send post request to cloudinary and return data object with url
+    const { data } = await axios.post("https://api.cloudinary.com/v1_1/texty/image/upload/", file, {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     })
 
-    console.log(response)
+    //Create message with media
+    await createMessage({ variables: { content: acceptedFiles[0].name, media: data.secure_url, chatId: this.props.chatId }})
 
-    await createMessage({ variables: { content: acceptedFiles[0].name, media: response.data.secure_url, chatId: this.props.chatId }})
-
+    //Set success message
     this.setState({ success: "Your file was uploaded & send"})
-
   }
 
   onDropRejected = (rejectedFiles) => (
@@ -50,9 +53,8 @@ class MediaUploader extends Component {
   render() {
     return (
       <Mutation mutation={CREATE_MESSAGE_WITH_MEDIA_MUTATION}>
-        {(createMessage, {error}) => {
-          if (error) return <p>Error</p>
-
+        {(createMessage, {loading, error}) => {
+          if (error) return <p>{onError(error)}</p>
 
           return (
             <div>
@@ -64,8 +66,7 @@ class MediaUploader extends Component {
               >
                 <div>
                   <p>Upload media here</p>
-                  <p>{this.state.success}</p>
-                  <p>{this.state.error}</p>
+                  <p>{this.state.success ? this.state.success : this.state.error}</p>
                 </div>
               </Dropzone>
             </div>

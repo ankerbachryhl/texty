@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import onError from '../../utils';
 
 import Message from './Message';
 import CreateMessage from './CreateMessage';
 import MediaUploader from './MediaUploader';
 
-import { AUTH_TOKEN } from '../constants'
+import { AUTH_TOKEN } from '../../constants'
 
 export const MESSAGES_QUERY = gql`
   query getChatMessages($chatId: String!) {
@@ -39,23 +40,23 @@ const MESSAGES_SUBSCRIPTION = gql`
 `
 
 class ChatRoom extends Component {
-
-  state = { chatId: this.props.location.state.chatId }
-
   render() {
     const authToken = localStorage.getItem(AUTH_TOKEN)
+    const { chatId, chatName } = this.props.location.state;
 
     return (
       <div>
         {authToken ? (
           <div>
+            <h1>Current chat: {chatName}</h1>
+
             <Query
               query={MESSAGES_QUERY}
-              variables={{ chatId: this.state.chatId }}
+              variables={{ chatId }}
             >
               {({ loading, error, subscribeToMore, ...result }) => {
                 if (loading) return `Loading messages - *wheel spinning*`;
-                if (error) return "Error :/ Error :/ Error :/"
+                if (error) return <p>{onError(error)}</p>;
 
                 return (
                   <ChatRoomWithData
@@ -66,10 +67,10 @@ class ChatRoom extends Component {
                         updateQuery: (prev, { subscriptionData }) => {
                           if (!subscriptionData.data) return prev;
                           const newMessage = subscriptionData.data.newMessage.node;
-                          const newDataArray = [...prev.chatMessages, newMessage];
+                          const newMessagesArray = [...prev.chatMessages, newMessage];
                           return ({
                             ...prev,
-                            chatMessages: newDataArray,
+                            chatMessages: newMessagesArray,
                           })
                         }
                       })
@@ -79,8 +80,8 @@ class ChatRoom extends Component {
               }}
 
             </Query>
-            <CreateMessage chatId={this.state.chatId} />
-            <MediaUploader chatId={this.state.chatId} />
+            <CreateMessage chatId={chatId} />
+            <MediaUploader chatId={chatId} />
           </div>
         ) : (
           <div>

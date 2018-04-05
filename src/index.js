@@ -18,9 +18,7 @@ import { AUTH_TOKEN } from './constants';
 
 //QUERY AND MUTATIONS LINK MIDDLEWARE
 
-const usersOnline = []
-
-const httpLink = new HttpLink({ uri: 'http://localhost:4000' })
+const httpLink = new HttpLink({ uri: 'https://test-sbppqdmzmw.now.sh' })
 
 const middlewareAuthLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem(AUTH_TOKEN);
@@ -38,7 +36,7 @@ const httpLinkWithAuthToken = middlewareAuthLink.concat(httpLink)
 //SUBSCRIPTION LINK MIDDLEWARE
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000`,
+  uri: `wss://test-sbppqdmzmw.now.sh`,
   options: {
     reconnect: true,
     connectionParams: {

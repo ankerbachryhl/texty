@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import onError from '../utils';
 
 import { CHATS_QUERY } from './Chats';
 
@@ -9,12 +10,24 @@ const CREATE_CHAT_MUTATION = gql`
     createChat(name: $name) {
       name
       id
+      createdAt
+      messages(last: 3) {
+        id
+        content
+      }
     }
   }
 `
 
 class CreateChat extends Component {
   state = { chatName: '' };
+
+  returnDateInString() {
+    const date = new Date()
+    return (
+      JSON.stringify(date)
+    )
+  }
 
   render() {
     return (
@@ -27,6 +40,8 @@ class CreateChat extends Component {
               __typename: "Chat",
               name: this.state.chatName,
               id: null,
+              createdAt: this.returnDateInString(),
+              messages: null,
             }
           }}
           update={(cache, { data: { createChat } }) => {
@@ -39,7 +54,7 @@ class CreateChat extends Component {
         >
           {(createChat, { loading, error }) => {
             if (loading) return <p>Creating chat</p>
-            if (error) return <p>Error</p>
+            if (error) return <p>{onError(error)}</p>
             return (
               <div>
                 <input
