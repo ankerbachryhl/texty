@@ -47,7 +47,9 @@ class Chats extends Component {
 
 const ChatSneakPeak = ({chat}) => (
   <div>
-    <Link to={{ pathname: '/chat/' + chat.id, state: { chatId: chat.id, chatName: chat.name }}}>
+    <Link to={{ pathname: '/chat/' + chat.id,
+      state: { chatId: chat.id, chatName: chat.name }}}
+    >
       <h1>{chat.name}</h1>
       <h3>{chat.createdAt}</h3>
       <h4>Flames: {chat.likes.length}</h4>

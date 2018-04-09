@@ -66,9 +66,9 @@ class Login extends Component {
           this.props.history.push(`/`)
         }}>
           {(login, { data, error }) => {
-            let errorMessage = ''
+            let errorMessage = ""
             if(error) {
-              errorMessage = errorMessage(error)
+              errorMessage = onError(error)
             }
 
             return (
@@ -82,7 +82,7 @@ class Login extends Component {
                 {(signup, { data, error }) => {
                   const { name, email, password } = this.state
                   if(error) {
-                    errorMessage = errorMessage(error)
+                    errorMessage = onError(error)
                   }
 
                   return (
