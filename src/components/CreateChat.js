@@ -11,6 +11,9 @@ const CREATE_CHAT_MUTATION = gql`
       name
       id
       createdAt
+      likes {
+        id
+      }
       messages(last: 3) {
         id
         content
@@ -41,6 +44,7 @@ class CreateChat extends Component {
               name: this.state.chatName,
               id: null,
               createdAt: this.returnDateInString(),
+              likes: [],
               messages: null,
             }
           }}
@@ -78,7 +82,5 @@ class CreateChat extends Component {
     )
   }
 }
-
-
 
 export default CreateChat

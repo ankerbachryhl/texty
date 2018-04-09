@@ -6,6 +6,7 @@ import onError from '../utils';
 
 import ChatRoom from './ChatRoom/ChatRoom'
 import CreateChat from './CreateChat'
+import Like from './Like'
 
 export const CHATS_QUERY = gql`
   query getChats {
@@ -13,6 +14,9 @@ export const CHATS_QUERY = gql`
       id
       name
       createdAt
+      likes {
+        id
+      }
       messages(last: 3) {
         id
         content
@@ -29,7 +33,6 @@ class Chats extends Component {
           {({ loading, error, data }) => {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>{onError(error)}</p>;
-            console.log(data.chats)
 
             return (
               data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} />)
@@ -47,6 +50,7 @@ const ChatSneakPeak = ({chat}) => (
     <Link to={{ pathname: '/chat/' + chat.id, state: { chatId: chat.id, chatName: chat.name }}}>
       <h1>{chat.name}</h1>
       <h3>{chat.createdAt}</h3>
+      <h4>Flames: {chat.likes.length}</h4>
       {chat.messages && (
         <div>
           <h3>Last three messages:</h3>
@@ -56,6 +60,7 @@ const ChatSneakPeak = ({chat}) => (
         </div>
       )}
     </Link>
+    <Like chatId={chat.id} />
   </div>
 )
 
