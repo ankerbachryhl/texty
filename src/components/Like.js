@@ -9,6 +9,10 @@ const LIKE_CHAT = gql`
   mutation likeChat($chatId: String!) {
     likeChat(chatId: $chatId) {
       id
+      chat {
+        id
+        likeCount
+      }
     }
   }
 `
@@ -20,13 +24,14 @@ class LikeChat extends Component {
         <Mutation
           mutation={LIKE_CHAT}
           update={(cache, { data: { likeChat } }) => {
-            const { chats } = cache.readQuery({ query: CHATS_QUERY })
-            const likedChat = chats.findIndex(chat => chat.id == this.props.chatId)
+            const { chats } = cache.readQuery({ query: this.props.query })
+            const likedChat = chats.findIndex(chat => chat.id === this.props.chatId)
 
             chats[likedChat].likes.push(likeChat)
+            chats[likedChat].likeCount = likeChat.chat.likeCount
 
             cache.writeQuery({
-              query: CHATS_QUERY,
+              query: this.props.query,
               data: {
                 chats: chats,
               }

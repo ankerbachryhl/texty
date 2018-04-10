@@ -11,6 +11,7 @@ const CREATE_CHAT_MUTATION = gql`
       name
       id
       createdAt
+      likeCount
       likes {
         id
       }
@@ -44,14 +45,15 @@ class CreateChat extends Component {
               name: this.state.chatName,
               id: null,
               createdAt: this.returnDateInString(),
+              likeCount: 0,
               likes: [],
               messages: null,
             }
           }}
           update={(cache, { data: { createChat } }) => {
-            const { chats } = cache.readQuery({ query: CHATS_QUERY })
+            const { chats } = cache.readQuery({ query: this.props.query })
             cache.writeQuery({
-              query: CHATS_QUERY,
+              query: this.props.query,
               data: { chats: chats.concat([createChat])}
             })
           }}
