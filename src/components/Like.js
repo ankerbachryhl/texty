@@ -3,8 +3,6 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import onError from '../utils';
 
-import { CHATS_QUERY } from './Chats';
-
 const LIKE_CHAT = gql`
   mutation likeChat($chatId: String!) {
     likeChat(chatId: $chatId) {

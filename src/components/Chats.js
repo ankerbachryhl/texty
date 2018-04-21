@@ -8,7 +8,7 @@ import ChatRoom from './ChatRoom/ChatRoom'
 import CreateChat from './CreateChat'
 import Like from './Like'
 
-export const CHATS_QUERY = gql`
+const TOP_CHATS_QUERY = gql`
   query getChats {
     chats(orderBy: likeCount_DESC) {
       id
@@ -26,7 +26,7 @@ export const CHATS_QUERY = gql`
   }
 `
 
-export const NEWEST_CHATS_QUERY = gql`
+const NEWEST_CHATS_QUERY = gql`
   query getChats {
     chats(orderBy: createdAt_DESC) {
       id
@@ -51,13 +51,15 @@ class Chats extends Component {
     return (
       <div>
         {this.state.showTop && (
-          <Query query={CHATS_QUERY} >
+          <Query query={TOP_CHATS_QUERY} >
             {({ loading, error, data }) => {
               if (loading) return <p>Loading...</p>;
               if (error) return <p>{onError(error)}</p>;
 
               return (
-                data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} showTop={this.state.showTop} />)
+                <div className="columns is-multiline">
+                  {data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} showTop={this.state.showTop} />)}
+                </div>
               )
             }}
           </Query>
@@ -69,23 +71,23 @@ class Chats extends Component {
               if (error) return <p>{onError(error)}</p>;
 
               return (
-                data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} showTop={this.state.showTop} />)
+                <div className="columns is-multiline">
+                  {data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} showTop={this.state.showTop} />)}
+                </div>
               )
             }}
           </Query>
         )}
 
-        <button onClick={() => {
-            this.setState({ showTop: false })
-            console.log(this.state.showTop)}}>Show newest</button>
-        <CreateChat query={this.state.showTop ? CHATS_QUERY : NEWEST_CHATS_QUERY }/>
+        <button onClick={() => this.setState({ showTop: !this.state.showTop })}>Show newest</button>
+        <CreateChat query={this.state.showTop ? TOP_CHATS_QUERY : NEWEST_CHATS_QUERY }/>
       </div>
     )
   }
 }
 
 const ChatSneakPeak = ({chat, showTop}) => (
-  <div>
+  <div className="column is-half">
     <Link to={{ pathname: '/chat/' + chat.id,
       state: { chatId: chat.id, chatName: chat.name }}}
     >
@@ -101,7 +103,7 @@ const ChatSneakPeak = ({chat, showTop}) => (
         </div>
       )}
     </Link>
-    <Like chatId={chat.id} query={showTop ? CHATS_QUERY : NEWEST_CHATS_QUERY } />
+    <Like chatId={chat.id} query={showTop ? TOP_CHATS_QUERY : NEWEST_CHATS_QUERY } />
   </div>
 )
 

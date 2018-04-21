@@ -7,7 +7,7 @@ import { AUTH_TOKEN } from '../constants'
 const Header = (props) => {
   const authToken = localStorage.getItem(AUTH_TOKEN);
   return (
-    <div>
+    <div className="testClass">
       {authToken && (
         <div>
           <Link to="/">

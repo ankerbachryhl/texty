@@ -3,8 +3,6 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import onError from '../utils';
 
-import { CHATS_QUERY } from './Chats';
-
 const CREATE_CHAT_MUTATION = gql`
   mutation createChat($name: String!) {
     createChat(name: $name) {

@@ -1,0 +1,19 @@
+//All bulma customizations in here
+
+@import "bulma/sass/utilities/initial-variables";
+@import "bulma/sass/utilities/functions";
+
+//Define new colors
+$blue: #4392F1;
+$green: #2AD6AF;
+$red: #FB3962;
+$yellow: #FDDE68;
+$black: #333;
+
+//Assign colors to primary, danger etc.
+$primary: $blue;
+
+//Set new font family
+$family-primary: "Roboto";
+
+@import 'bulma/bulma.sass';

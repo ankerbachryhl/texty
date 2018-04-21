@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import '../App.css';
+import '../Main.css';
 
 import ChatRoom from './ChatRoom/ChatRoom';
 import Login from './Login';
 import Header from './Header';
 import Chats from './Chats';
+import Landingpage from './Landingpage'
 
 import { AUTH_TOKEN } from '../constants'
 
@@ -13,7 +14,7 @@ class App extends Component {
   render() {
     const authToken = localStorage.getItem(AUTH_TOKEN)
     return (
-      <div className="App">
+      <div className="Landingpage">
         <Header />
           {authToken && (
             <Switch>
@@ -24,7 +25,8 @@ class App extends Component {
           )}
           {!authToken && (
             <Switch>
-              <Route path="/" component={Login} />
+              <Route exact path="/" component={Landingpage} />
+              <Route exaxt path="/login" component={Login} />
             </Switch>
           )}
       </div>
