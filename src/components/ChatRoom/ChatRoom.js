@@ -45,10 +45,10 @@ class ChatRoom extends Component {
     const { chatId, chatName } = this.props.location.state;
 
     return (
-      <div>
+      <div className="content">
         {authToken ? (
           <div>
-            <h1>Current chat: {chatName}</h1>
+            <h1 className="is-size-2 has-text-black">Current chat: {chatName}</h1>
 
             <Query
               query={MESSAGES_QUERY}

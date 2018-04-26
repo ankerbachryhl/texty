@@ -41,11 +41,12 @@ class LikeChat extends Component {
 
             return (
               <div>
-                <button onClick={() => {
+                <button className="button is-primary is-medium is-outlined" onClick={() => {
                     likeChat({ variables: { chatId: this.props.chatId }})
                   }}
                 >
-                  Like Chat
+                <span className="icon"><i className="fas fa-angle-up"></i></span>
+                  <span>Upvote</span>
                 </button>
               </div>
               )

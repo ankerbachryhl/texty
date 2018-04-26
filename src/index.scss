@@ -16,4 +16,16 @@ $primary: $blue;
 //Set new font family
 $family-primary: "Roboto";
 
+//Font setting
+$size-1: 80px;
+$size-2: 48px;
+$size-3: 36px;
+$size-4: 28px;
+$size-5: 18px;
+$size-6: 14px;
+$size-7: 12px;
+
+//Column setting
+$column-gap: 40px;
+
 @import 'bulma/bulma.sass';

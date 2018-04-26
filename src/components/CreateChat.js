@@ -13,10 +13,6 @@ const CREATE_CHAT_MUTATION = gql`
       likes {
         id
       }
-      messages(last: 3) {
-        id
-        content
-      }
     }
   }
 `
@@ -45,31 +41,31 @@ class CreateChat extends Component {
               createdAt: this.returnDateInString(),
               likeCount: 0,
               likes: [],
-              messages: null,
             }
           }}
           update={(cache, { data: { createChat } }) => {
             const { chats } = cache.readQuery({ query: this.props.query })
             cache.writeQuery({
               query: this.props.query,
-              data: { chats: chats.concat([createChat])}
+              data: { chats: [createChat, ...chats] }
             })
           }}
         >
           {(createChat, { loading, error }) => {
-            if (loading) return <p>Creating chat</p>
             if (error) return <p>{onError(error)}</p>
             return (
-              <div>
+              <div className="level">
                 <input
                   value={this.state.chatName}
                   onChange={e => this.setState({ chatName: e.target.value })}
                   placeholder="Chat Name"
+                  className="input is-success is-outlined is-medium"
                 />
                 <button onClick={() => {
                     createChat({ variables: { name: this.state.chatName }})
                     this.setState({ chatName: '' })
                   }}
+                  className="button is-outlined is-primary is-medium"
                 >
                   Make chat
                 </button>

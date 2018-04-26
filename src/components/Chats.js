@@ -18,10 +18,6 @@ const TOP_CHATS_QUERY = gql`
       likes {
         id
       }
-      messages(last: 3) {
-        id
-        content
-      }
   	}
   }
 `
@@ -36,10 +32,6 @@ const NEWEST_CHATS_QUERY = gql`
       likes {
         id
       }
-      messages(last: 3) {
-        id
-        content
-      }
   	}
   }
 `
@@ -49,38 +41,35 @@ class Chats extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.showTop && (
-          <Query query={TOP_CHATS_QUERY} >
-            {({ loading, error, data }) => {
-              if (loading) return <p>Loading...</p>;
-              if (error) return <p>{onError(error)}</p>;
+      <div className="chats-overview">
+        <div className="create-chat content">
+          <CreateChat query={this.state.showTop ? TOP_CHATS_QUERY : NEWEST_CHATS_QUERY }/>
+        </div>
+        <div className="filter content">
+          <button className="button is-medium is-primary is-outlined" onClick={() => this.setState({ showTop: !this.state.showTop })}>{this.state.showTop ? "Show newest" : "Show top"}</button>
+        </div>
+        <div className="columns is-multiline is-centered">
+          {this.state.showTop && (
+            <Query query={TOP_CHATS_QUERY} >
+              {({ loading, error, data }) => {
+                if (loading) return <p>Loading...</p>;
+                if (error) return <p>{onError(error)}</p>;
 
-              return (
-                <div className="columns is-multiline">
-                  {data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} showTop={this.state.showTop} />)}
-                </div>
-              )
-            }}
-          </Query>
-        )}
-        {!this.state.showTop && (
-          <Query query={NEWEST_CHATS_QUERY}>
-            {({ loading, error, data }) => {
-              if (loading) return <p>Loading...</p>;
-              if (error) return <p>{onError(error)}</p>;
+                return data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} showTop={this.state.showTop} />)
+              }}
+            </Query>
+          )}
+          {!this.state.showTop && (
+            <Query query={NEWEST_CHATS_QUERY}>
+              {({ loading, error, data }) => {
+                if (loading) return <p>Loading...</p>;
+                if (error) return <p>{onError(error)}</p>;
 
-              return (
-                <div className="columns is-multiline">
-                  {data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} showTop={this.state.showTop} />)}
-                </div>
-              )
-            }}
-          </Query>
-        )}
-
-        <button onClick={() => this.setState({ showTop: !this.state.showTop })}>Show newest</button>
-        <CreateChat query={this.state.showTop ? TOP_CHATS_QUERY : NEWEST_CHATS_QUERY }/>
+                return data.chats.map(chat => <ChatSneakPeak key={chat.id} chat={chat} showTop={this.state.showTop} />)
+              }}
+            </Query>
+          )}
+        </div>
       </div>
     )
   }
@@ -88,22 +77,18 @@ class Chats extends Component {
 
 const ChatSneakPeak = ({chat, showTop}) => (
   <div className="column is-half">
-    <Link to={{ pathname: '/chat/' + chat.id,
-      state: { chatId: chat.id, chatName: chat.name }}}
-    >
-      <h1>{chat.name}</h1>
-      <h3>{chat.createdAt}</h3>
-      <h4>Flames: {chat.likeCount}</h4>
-      {chat.messages && (
-        <div>
-          <h3>Last three messages:</h3>
-          <div>
-            {chat.messages.map(message => <p key={message.id}>{message.content}</p>)}
-          </div>
-        </div>
-      )}
-    </Link>
-    <Like chatId={chat.id} query={showTop ? TOP_CHATS_QUERY : NEWEST_CHATS_QUERY } />
+
+    <div className="box chat content">
+      <Link to={{ pathname: '/chat/' + chat.id,
+        state: { chatId: chat.id, chatName: chat.name }}}
+      >
+        <p className="is-size-3 has-text-black">{chat.name}</p>
+      </Link>
+
+      <p className="is-size-5 is-italic has-text-success">Created at: {chat.createdAt}</p>
+      <p className="is-size-5 has-text-success">Upvotes: {chat.likeCount}</p>
+      <Like chatId={chat.id} query={showTop ? TOP_CHATS_QUERY : NEWEST_CHATS_QUERY } />
+    </div>
   </div>
 )
 
