@@ -24,3 +24,4 @@ yarn-error.log*
 
 src/**/*.css
 src/index.scss
+src/*.css
