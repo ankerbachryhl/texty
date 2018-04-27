@@ -18,7 +18,7 @@ class App extends Component {
         <Header />
           {authToken && (
             <Switch>
-              <Route exact path="/" component={Chats} />
+              <Route exact path="/chats" component={Chats} />
               <Route exact path="/chat/:id" component={ChatRoom} />
               <Route exact path="/login" component={Login} />
             </Switch>

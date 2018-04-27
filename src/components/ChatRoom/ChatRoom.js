@@ -18,6 +18,7 @@ export const MESSAGES_QUERY = gql`
       id
       sendBy {
         name
+        id
       }
     }
   }
@@ -33,6 +34,7 @@ const MESSAGES_SUBSCRIPTION = gql`
         id
         sendBy {
           name
+          id
         }
       }
     }
@@ -78,7 +80,6 @@ class ChatRoom extends Component {
                   />
                 )
               }}
-
             </Query>
             <CreateMessage chatId={chatId} />
             <MediaUploader chatId={chatId} />
