@@ -23,5 +23,3 @@ yarn-error.log*
 #Sass
 
 src/**/*.css
-src/index.scss
-src/*.css
